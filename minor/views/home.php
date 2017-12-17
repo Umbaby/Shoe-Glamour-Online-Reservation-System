@@ -1,0 +1,437 @@
+<?php session_start();
+    include "../models/dbconnect.php";
+
+    if(!isset($_SESSION['name'])){
+
+    $query = "SELECT * FROM products";
+	$result = $conn->query($query);
+
+	$query2 = "SELECT DISTINCT category FROM products";
+	$result2 = $conn->query($query2);
+    
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Creative - Bootstrap 3 Responsive Admin Template">
+  <meta name="author" content="GeeksLabs">
+  <meta name="keyword" content="Creative, Dashboard, Admin, Template, Theme, Bootstrap, Responsive, Retina, Minimal">
+  <link rel="shortcut icon" href="img/favicon.png">
+
+  <title> Shoe Glamour Online </title>
+
+  <!-- Bootstrap CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- bootstrap theme -->
+  <link href="css/bootstrap-theme.css" rel="stylesheet">
+  <!--external css-->
+  <!-- font icon -->
+  <link href="css/elegant-icons-style.css" rel="stylesheet" />
+  <link href="css/font-awesome.min.css" rel="stylesheet" />
+  <!-- full calendar css-->
+  <link href="assets/fullcalendar/fullcalendar/bootstrap-fullcalendar.css" rel="stylesheet" />
+  <link href="assets/fullcalendar/fullcalendar/fullcalendar.css" rel="stylesheet" />
+  <!-- easy pie chart-->
+  <link href="assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen" />
+  <!-- owl carousel -->
+  <link rel="stylesheet" href="css/owl.carousel.css" type="text/css">
+  <link href="css/jquery-jvectormap-1.2.2.css" rel="stylesheet">
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/fullcalendar.css">
+  <link href="css/widgets.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/style-responsive.css" rel="stylesheet" />
+  <link href="css/xcharts.min.css" rel=" stylesheet">
+  <link href="css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+  <!-- =======================================================
+    Theme Name: NiceAdmin
+    Theme URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+    Author: BootstrapMade
+    Author URL: https://bootstrapmade.com
+  ======================================================= -->
+</head>
+
+<body>
+  <!-- container section start -->
+  <section id="container" class="">
+
+
+    <header class="header dark-bg">
+    
+      <!--logo start-->
+      <a href="home.php" class="logo"> SHOE <span class="lite">GLAMOUR</span></a>
+      <!--logo end-->
+
+
+      <div class="top-nav notification-row">
+        <!-- notificatoin dropdown start-->
+        <ul class="nav pull-right top-menu">
+
+          <!-- task notificatoin start -->
+          <li id="task_notificatoin_bar" class="home">
+            <a class="homeBtn" href="home.php"> Home
+                            
+                  <ul class="dropdown-menu extended tasks-bar">
+                </a>
+            </ul>
+          </li>
+
+          <li id="mail_notificatoin_bar" class="about">
+            <a class="aboutBtn" href="aboutus.php"> About Us
+                
+                <ul class="dropdown-menu extended inbox">                   </a>
+                </a>
+              </ul>
+          </li>
+          <!-- inbox notificatoin end -->
+          <!-- alert notification start-->
+          <li id="alert_notificatoin_bar" class="developers">
+            <a class="devBtn" href="developers.php"> The Developers
+
+            <ul class="dropdown-menu extended notification">
+             
+                  </a>
+            
+            </ul>
+          </li>
+          <!-- alert notification end-->
+          <!-- alert notification start-->
+          <li id="alert_notificatoin_bar" class="developers">
+            <a class="devBtn" href="index.php"> Sign In
+
+            <ul class="dropdown-menu extended notification">
+             
+                  </a>
+            
+            </ul>
+          </li>
+          <!-- alert notification end-->
+          <!-- alert notification start-->
+          <li id="alert_notificatoin_bar" class="developers">
+            <a class="devBtn" href="sign_up.php"> Sign Up
+
+            <ul class="dropdown-menu extended notification">
+             
+                  </a>
+            
+            </ul>
+          </li>
+          <!-- alert notification end-->
+          
+        </ul>
+        <!-- notificatoin dropdown end-->
+      </div>
+    </header>
+    <!--header end-->
+
+   
+
+    <!--main content start-->
+    <section id="main-content">
+      <section class="wrapper">
+        <!--overview start-->
+        <div class="row">
+          <div class="col-lg-12">
+            <h3 class="page-header"><i class="fa fa-list"></i> Reserve NOW!!! </h3>
+            <ol class="breadcrumb">
+                <br>
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                &nbsp&nbsp&nbspCategory:
+                <select id="category" name="category" required>
+                    <option value="all" name="all">All</option>
+                    <?php while($row2=$result2->fetch_array()){ ?>
+                        <option value="<?php echo $row2['0']; ?>" name="<?php echo $row2['0']; ?>"> 
+                            <?php 
+                                $query3 = "SELECT * FROM categories";
+                                $result3 = $conn->query($query3);	
+                                while($row3=$result3->fetch_array()){
+                                    if($row3['0']==$row2['0']){
+                                        echo $row3['1'];
+                                    } 
+                                }
+                            ?> 
+                        </option>
+                    <?php } ?>
+                </select>
+                <input type="submit" name="submit" value="Search"/>
+                <a href="home.php">Cancel</a> <br>
+            </form>
+            </ol>
+          </div>  
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="body-content">
+                <!-- LIST OF PRODUCTS IBUTANG DIRE -->
+
+                <?php if (!isset($_POST['submit'])) { ?>
+                    <div class="container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Preview</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <?php while($row=$result->fetch_array()){ ?>
+                            <?php $image = $row['6']; ?>
+                            <?php $image_src = "../images/".$image; ?>
+                                <tr>
+                                    <td><img src="<?php echo $image_src; ?>" width="150px" height="150px" ></td>
+                                    <td><h4><?php echo $row['2']; ?></h4></td>
+                                    <td><h4>
+                                    <?php 
+                                        $category = $row['1'];
+                                        $query2 = "SELECT * FROM categories WHERE category_number = '$category'";
+                                        $result2 = $conn->query($query2);
+                                        
+                                        while($row2=$result2->fetch_array()){
+                                            echo $row2['1'];
+                                        } 
+                                    ?>
+                                    </h4></td>
+                                    <td><h4><?php echo "Php " . $row['5']; ?></h4></td>
+                                    <td><h4><?php if($row['4']>0){ echo "Available";} else { echo "Out of stock";} ?></h4></td>
+                                    <td><h4><?php echo $row['3']; ?></h4></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php 
+                    } else if (isset($_POST['submit'])) {
+                        if($_POST['category']=="all"){
+                     ?> 
+                         <div class="container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Preview</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <?php while($row=$result->fetch_array()){ ?>
+                                <?php $image = $row['6']; ?>
+                                <?php $image_src = "../images/".$image; ?>
+                                    <tr>
+                                        <td><img src="<?php echo $image_src; ?>" width="150px" height="150px" ></td>
+                                        <td><h4><?php echo $row['2']; ?></h4></td>
+                                        <td><h4>
+                                        <?php 
+                                            $category = $row['1'];
+                                            $query2 = "SELECT * FROM categories WHERE category_number = '$category'";
+                                            $result2 = $conn->query($query2);
+                                            
+                                            while($row2=$result2->fetch_array()){
+                                                echo $row2['1'];
+                                            } 
+                                        ?>
+                                        </h4></td>
+                                        <td><h4><?php echo "Php " . $row['5']; ?></h4></td>
+                                        <td><h4><?php if($row['4']>0){ echo "Available";} else { echo "Out of stock";} ?></h4></td>
+                                        <td><h4><?php echo $row['3']; ?></h4></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                        </div>
+                    <?php
+                        } else {
+                            $category = mysqli_real_escape_string($conn, $_POST['category']);
+                            $category_query = "SELECT * FROM products WHERE category ='$category'";
+                  $category_result = $conn->query($category_query);
+                  
+                  if($category_result->num_rows>0){
+                        ?>
+                            <div class="container">
+                            <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Preview</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <?php while($category_row=$category_result->fetch_array()){ ?>
+                                <?php $image = $category_row['6']; ?>
+                                <?php $image_src = "../images/".$image; ?>
+                                    <tr>
+                                        <td><img src="<?php echo $image_src; ?>" width="150px" height="150px" ></td>				
+                                        <td><h4><?php echo $category_row['2']; ?></h4></td>
+                                        <td><h4>
+                                        <?php 
+                                            $categorynum = $category_row['1'];
+                                            $query2 = "SELECT * FROM categories WHERE category_number = '$categorynum'";
+                                            $result2 = $conn->query($query2);
+                                            
+                                            while($row2=$result2->fetch_array()){
+                                                echo $row2['1'];
+                                            } 
+                                        ?>
+                                        </h4></td>
+                                        <td><h4><?php echo "Php ".$category_row['5']; ?></h4></td>
+                                        <td><h4><?php if($category_row['4']>0){ echo "Available";} else { echo "Out of stock";} ?></h4></td>
+                                        <td><h4><?php echo $category_row['3']; ?></h4></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+              <?php	} else { ?>
+                <div class="container">
+                            <table class="table">
+                            <thead>
+                              <tr>
+                                <th>Preview</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Description</th>
+                              </tr>
+                            </thead>
+                            
+                            <tbody>
+                              <tr>
+                                <td>---------------</td>
+                                <td>---------------</td>
+                                <td>---------------</td>
+                                <td>---------------</td>
+                                <td>---------------</td>
+                                <td>---------------</td>
+                              </tr>
+                            </tbody>
+                            </table>
+                        
+                   <h4>No products in this category yet.</h4>
+                   </div>
+                   <?php  	} 
+                        }
+            } ?>
+                
+
+
+            </div>
+          </div>
+        </div>
+
+
+    <!--main content end-->
+  </section>
+  <!-- container section start -->
+
+  <!-- javascripts -->
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery-ui-1.10.4.min.js"></script>
+  <script src="js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
+  <!-- bootstrap -->
+  <script src="js/bootstrap.min.js"></script>
+  <!-- nice scroll -->
+  <script src="js/jquery.scrollTo.min.js"></script>
+  <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
+  <!-- charts scripts -->
+  <script src="assets/jquery-knob/js/jquery.knob.js"></script>
+  <script src="js/jquery.sparkline.js" type="text/javascript"></script>
+  <script src="assets/jquery-easy-pie-chart/jquery.easy-pie-chart.js"></script>
+  <script src="js/owl.carousel.js"></script>
+  <!-- jQuery full calendar -->
+  <script src="js/fullcalendar.min.js"></script>
+    <!-- Full Google Calendar - Calendar -->
+    <script src="assets/fullcalendar/fullcalendar/fullcalendar.js"></script>
+    <!--script for this page only-->
+    <script src="js/calendar-custom.js"></script>
+    <script src="js/jquery.rateit.min.js"></script>
+    <!-- custom select -->
+    <script src="js/jquery.customSelect.min.js"></script>
+    <script src="assets/chart-master/Chart.js"></script>
+
+    <!--custome script for all page-->
+    <script src="js/scripts.js"></script>
+    <!-- custom script for this page-->
+    <script src="js/sparkline-chart.js"></script>
+    <script src="js/easy-pie-chart.js"></script>
+    <script src="js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="js/jquery-jvectormap-world-mill-en.js"></script>
+    <script src="js/xcharts.min.js"></script>
+    <script src="js/jquery.autosize.min.js"></script>
+    <script src="js/jquery.placeholder.min.js"></script>
+    <script src="js/gdp-data.js"></script>
+    <script src="js/morris.min.js"></script>
+    <script src="js/sparklines.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/jquery.slimscroll.min.js"></script>
+    <script>
+      //knob
+      $(function() {
+        $(".knob").knob({
+          'draw': function() {
+            $(this.i).val(this.cv + '%')
+          }
+        })
+      });
+
+      //carousel
+      $(document).ready(function() {
+        $("#owl-slider").owlCarousel({
+          navigation: true,
+          slideSpeed: 300,
+          paginationSpeed: 400,
+          singleItem: true
+
+        });
+      });
+
+      //custom select box
+
+      $(function() {
+        $('select.styled').customSelect();
+      });
+
+      /* ---------- Map ---------- */
+      $(function() {
+        $('#map').vectorMap({
+          map: 'world_mill_en',
+          series: {
+            regions: [{
+              values: gdpData,
+              scale: ['#000', '#000'],
+              normalizeFunction: 'polynomial'
+            }]
+          },
+          backgroundColor: '#eef3f7',
+          onLabelShow: function(e, el, code) {
+            el.html(el.html() + ' (GDP - ' + gdpData[code] + ')');
+          }
+        });
+      });
+    </script>
+<?php 
+    } else {
+        header("location:index.php");
+    }
+?>
+</body>
+
+</html>
